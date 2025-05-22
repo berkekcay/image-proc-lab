@@ -1,0 +1,1 @@
+“This is a chessboard, and every move is crucial.”
