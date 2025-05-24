@@ -103,14 +103,22 @@ if uploaded_image:
 
         with st.container():
             st.markdown("""
-                <div style="
+    <div style="
         display: flex;
         justify-content: center;
-        margin-top: 2rem;
+        margin-top: 4rem;
     ">
-        <div class="custom-box" style="width: 100%; max-width: 700px;">
-                    <h3 style='color: black;'>📊 Analiz Sonuçları 📊</h3>
-            """, unsafe_allow_html=True)
+    <div class="custom-box" style="width: 100%; max-width: 700px;">
+        <h3 style='color: black; margin-top: 1rem; margin-bottom: 1.5rem;'>📊 Analiz Sonuçları 📊</h3>
+""", unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)  # <-- alt boşluk satırı
+            st.markdown("<br>", unsafe_allow_html=True)  # <-- alt boşluk satırı
+            st.markdown("<br>", unsafe_allow_html=True)  # <-- alt boşluk satırı
+            st.markdown("<br>", unsafe_allow_html=True)  # <-- alt boşluk satırı
+            st.markdown("<br>", unsafe_allow_html=True)  # <-- alt boşluk satırı
+
+
+
             c1, c2, c3 = st.columns(3)
 
             c1.metric("🌟 Parlaklık", f"{brightness:.2f}")
@@ -118,16 +126,16 @@ if uploaded_image:
             c3.metric("❤️ Beğeni Tahmini", f"{int(predicted_likes)}")
 
             rgb_hex = f"#{int(dominant[2]):02x}{int(dominant[1]):02x}{int(dominant[0]):02x}"
-            st.markdown("### 🧪 Ekstra Özellikler")
-            st.write(f"📏 Kontrast: {contrast:.2f}")
-            st.write(f"🔀 Entropi: {entropy:.2f}")
-            st.write(f"🌈 Renk Canlılığı: {colorfulness:.2f}")
-            st.write(f"👤 Yüz Sayısı (MTCNN): {faces}")
-            st.write(f"📐 En-Boy Oranı: {aspect_ratio:.2f}")
-            st.write(f"🧩 Kenar Yoğunluğu: {edges:.4f}")
-            st.markdown("### 🎨 Dominant Renk")
+            st.markdown(f"<div style='font-size:18px; font-weight:600;'> EKSTRA ÖZELLİKLER: {contrast:.2f}</div>", unsafe_allow_html=True)         
+            st.markdown(f"<div style='font-size:18px; font-weight:600;'>📏 Kontrast: {contrast:.2f}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size:18px; font-weight:600;'>🔀 Entropi: {entropy:.2f}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size:18px; font-weight:600;'>🌈 Renk Canlılığı: {colorfulness:.2f}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size:18px; font-weight:600;'>👤 Yüz Sayısı (MTCNN): {faces}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size:18px; font-weight:600;'>📐 En-Boy Oranı: {aspect_ratio:.2f}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size:18px; font-weight:600;'>🧩 Kenar Yoğunluğu: {edges:.4f}</div>", unsafe_allow_html=True)
+            st.markdown("### 🎨 Dominant Renk", unsafe_allow_html=True)
             st.color_picker("Dominant RGB", value=rgb_hex, label_visibility="collapsed")
-            st.write(f"RGB: ({int(dominant[2])}, {int(dominant[1])}, {int(dominant[0])})")
+            st.markdown(f"<div style='font-size:18px; font-weight:600;'>RGB: ({int(dominant[2])}, {int(dominant[1])}, {int(dominant[0])})</div>", unsafe_allow_html=True)
 
             st.markdown("### 💡 Optimizasyon Önerileri")
 
