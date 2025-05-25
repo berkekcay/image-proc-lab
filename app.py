@@ -2,6 +2,8 @@ import streamlit as st
 import joblib
 import numpy as np
 import cv2
+import altair as alt
+import pandas as pd
 from mtcnn import MTCNN
 from PIL import Image
 from extract_features import (
@@ -52,7 +54,7 @@ with st.container():
     st.markdown("""
         <div class="center-wrapper">
             <div class="custom-box">
-                <h1 style='margin-bottom: 0.5rem; color: black;'>📸 AI GÖRSEL ETKİLEŞİM ANALİZİ</h1>
+                <h1 style='margin-bottom: 0.5rem; color: black;'> AI GÖRSEL ETKİLEŞİM ANALİZİ</h1>
                 <p style='font-size: 17px; color: black;'>Yüklediğiniz görseli analiz ederek tahmini beğeni sayısını ve içerik kalitesi hakkında öneriler sunar.</p>
             </div>
 
@@ -68,7 +70,7 @@ with st.container():
     st.markdown("<p style='font-size:18px; font-weight:bold;'>📁 Görsel seçin veya sürükleyin (.jpg, .png)</p>", unsafe_allow_html=True)
 
 uploaded_image = st.file_uploader(
-    label="",  # artık boş
+    label="",
     type=["jpg", "jpeg", "png"],
     label_visibility="collapsed"
 )
@@ -101,6 +103,25 @@ if uploaded_image:
             features = np.array([[brightness, sharpness, dominant[2], dominant[1], dominant[0]]])
             predicted_likes = model.predict(features)[0]
 
+            # Grafik bloğu burada ekleniyor
+            metrics_df = pd.DataFrame({
+                'Ozellik': ['Parlaklık', 'Netlik', 'Kontrast', 'Entropi', 'Renk Canlılığı'],
+                'Deger': [brightness, sharpness, contrast, entropy, colorfulness]
+            })
+
+            chart = alt.Chart(metrics_df).mark_bar().encode(
+                x=alt.X('Ozellik', sort=None),
+                y='Deger',
+                color=alt.Color('Ozellik', legend=None),
+                tooltip=['ÖZELLİKLER', 'Değerler']
+            ).properties(
+                width=600,
+                height=300,
+                title='📊 Görsel Özellikler Grafiği'
+            )
+
+            st.altair_chart(chart, use_container_width=True)
+
         with st.container():
             st.markdown("""
     <div style="
@@ -111,75 +132,78 @@ if uploaded_image:
     <div class="custom-box" style="width: 100%; max-width: 700px;">
         <h3 style='color: black; margin-top: 1rem; margin-bottom: 1.5rem;'>📊 Analiz Sonuçları 📊</h3>
 """, unsafe_allow_html=True)
-            st.markdown("<br>", unsafe_allow_html=True)  # <-- alt boşluk satırı
-            st.markdown("<br>", unsafe_allow_html=True)  # <-- alt boşluk satırı
-            st.markdown("<br>", unsafe_allow_html=True)  # <-- alt boşluk satırı
-            st.markdown("<br>", unsafe_allow_html=True)  # <-- alt boşluk satırı
-            st.markdown("<br>", unsafe_allow_html=True)  # <-- alt boşluk satırı
-
-
 
             c1, c2, c3 = st.columns(3)
-
             c1.metric("🌟 Parlaklık", f"{brightness:.2f}")
             c2.metric("🔍 Netlik", f"{sharpness:.2f}")
             c3.metric("❤️ Beğeni Tahmini", f"{int(predicted_likes)}")
 
             rgb_hex = f"#{int(dominant[2]):02x}{int(dominant[1]):02x}{int(dominant[0]):02x}"
             st.markdown(f"<div style='font-size:18px; font-weight:600;'> EKSTRA ÖZELLİKLER: {contrast:.2f}</div>", unsafe_allow_html=True)         
-            st.markdown(f"<div style='font-size:18px; font-weight:600;'>📏 Kontrast: {contrast:.2f}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size:18px; font-weight:600;'>🔷 Kontrast: {contrast:.2f}</div>", unsafe_allow_html=True)
             st.markdown(f"<div style='font-size:18px; font-weight:600;'>🔀 Entropi: {entropy:.2f}</div>", unsafe_allow_html=True)
             st.markdown(f"<div style='font-size:18px; font-weight:600;'>🌈 Renk Canlılığı: {colorfulness:.2f}</div>", unsafe_allow_html=True)
             st.markdown(f"<div style='font-size:18px; font-weight:600;'>👤 Yüz Sayısı (MTCNN): {faces}</div>", unsafe_allow_html=True)
-            st.markdown(f"<div style='font-size:18px; font-weight:600;'>📐 En-Boy Oranı: {aspect_ratio:.2f}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size:18px; font-weight:600;'>📀 En-Boy Oranı: {aspect_ratio:.2f}</div>", unsafe_allow_html=True)
             st.markdown(f"<div style='font-size:18px; font-weight:600;'>🧩 Kenar Yoğunluğu: {edges:.4f}</div>", unsafe_allow_html=True)
             st.markdown("### 🎨 Dominant Renk", unsafe_allow_html=True)
             st.color_picker("Dominant RGB", value=rgb_hex, label_visibility="collapsed")
             st.markdown(f"<div style='font-size:18px; font-weight:600;'>RGB: ({int(dominant[2])}, {int(dominant[1])}, {int(dominant[0])})</div>", unsafe_allow_html=True)
 
-            st.markdown("### 💡 Optimizasyon Önerileri")
+            st.markdown("## 💡 Detaylı Optimizasyon Önerileri")
 
-            if brightness < 100:
-                st.warning("📢 Görsel karanlık. Daha parlak bir versiyon deneyin.")
-            elif brightness > 200:
-                st.warning("📢 Görsel çok parlak. Kontrastı azaltabilirsiniz.")
-
-            if sharpness < 200:
-                st.warning("📢 Görsel net değil. Daha yüksek çözünürlüklü bir görsel kullanabilirsiniz.")
-            elif sharpness > 1000:
-                st.warning("📢 Görsel fazla keskin olabilir. Doğal görünüme dikkat edin.")
-
-            if predicted_likes < 500:
-                st.info("📌 Etkileşim düşük olabilir. Renk ve kompozisyonu gözden geçirin.")
+            # Parlaklık
+            if brightness < 80:
+                st.warning("🌙 **Görsel karanlık görünüyor.**\n\nDaha fazla ışık, daha canlı bir görüntü sunabilir. Arka plan aydınlatmasını artırmayı veya pozlamayı düzenlemeyi düşünebilirsiniz.")
+            elif brightness > 220:
+                st.warning("☀️ **Görsel çok parlak olabilir.**\n\nDetay kaybı yaşanabilir. Parlaklığı azaltmak ya da kontrastı dengelemek faydalı olabilir.")
             else:
-                st.success("🎉 Görseliniz yüksek etkileşim alabilir!")
+                st.success("✅ Parlaklık seviyesi ideal aralıkta.")
 
+            # Netlik (Sharpness)
+            if sharpness < 150:
+                st.warning("🔍 **Görsel net değil.**\n\nOdak sorunları olabilir veya düşük çözünürlüklü görsel yüklenmiş olabilir. Daha net bir versiyon tercih edin.")
+            elif sharpness > 1200:
+                st.info("⚠️ **Aşırı netlik algılandı.**\n\nBu, keskinleştirme filtrelerinden kaynaklanıyor olabilir. Görsel doğallığını kaybedebilir.")
+            else:
+                st.success("✅ Netlik seviyesi iyi.")
+
+            # Renk Canlılığı
             if colorfulness < 20:
-                st.info("🌈 Görselde renk canlılığı düşük. Daha canlı renkler kullanmayı düşünebilirsiniz.")
+                st.info("🎨 **Renkler soluk görünüyor.**\n\nRenk kontrastını artırmak veya daha sıcak tonlar tercih etmek daha dikkat çekici olabilir.")
             elif colorfulness > 60:
-                st.warning("🌈 Görsel çok renkli olabilir. Göz yorgunluğu yaratabilir.")
-
-            if contrast < 30:
-                st.info("🌓 Kontrast düşük. Görsel daha dikkat çekici olabilir.")
-            elif contrast > 100:
-                st.warning("🌓 Aşırı kontrast var. Doğal görünüm için dengeli kontrast önerilir.")
-
-            if faces == 0:
-                st.info("👤 Görselde yüz bulunamadı. İnsan yüzü içeren görseller daha fazla etkileşim alabilir.")
+                st.warning("🌈 **Renk aşırı canlı olabilir.**\n\nBu durum yapay görünüm yaratabilir. Tonları dengelemekte fayda var.")
             else:
-                st.success(f"👤 {faces} adet yüz algılandı. Bu etkileşimi artırabilir!")
+                st.success("✅ Renk canlılığı dengeli.")
 
-            if edges < 0.01:
-                st.info("🧩 Görsel çok sade. Dikkat çekmek için biraz detay eklenebilir.")
-            elif edges > 0.10:
-                st.warning("🧩 Görsel çok karmaşık. Basitlik her zaman iyidir!")
+            # Kontrast
+            if contrast < 30:
+                st.info("🌓 **Kontrast düşük.**\n\nKatmanlar veya nesneler yeterince ayrışmıyor olabilir. Hafif kontrast artırımı önerilir.")
+            elif contrast > 100:
+                st.warning("🌗 **Kontrast çok yüksek.**\n\nBu, detay kaybına ve rahatsız edici bir görünüme neden olabilir.")
+            else:
+                st.success("✅ Kontrast seviyesi iyi.")
 
+            # Entropi (Bilgi Yoğunluğu)
             if entropy < 4.0:
-                st.info("🔀 Görselde bilgi yoğunluğu düşük. Daha zengin içerikli görseller denenebilir.")
+                st.info("🔀 **Görsel basit yapıda.**\n\nDaha fazla detay eklemek, kullanıcıyı daha çok etkileyebilir.")
             elif entropy > 7.0:
-                st.warning("🔀 Görsel çok bilgi içeriyor olabilir. Dikkat dağıtıcı olabilir.")
+                st.warning("🔀 **Görsel çok karmaşık.**\n\nİzleyicinin odaklanması zorlaşabilir. Odak nesnesini belirginleştirin.")
+            else:
+                st.success("✅ Görsel dengeli bilgi yoğunluğuna sahip.")
 
+            # En-boy oranı
             if aspect_ratio > 2:
-                st.info("📐 Görsel çok yatay. Mobil görünümde bozulabilir.")
+                st.warning("📐 **Görsel çok yatay.**\n\nMobilde görüntüleme sorunları yaşanabilir. Daha dengeli bir oran tercih edilebilir.")
             elif aspect_ratio < 0.5:
-                st.info("📐 Görsel çok dikey. Daha dengeli bir oran denenebilir.")
+                st.warning("📐 **Görsel çok dikey.**\n\nKullanıcı deneyimi açısından yatay oranlar daha etkilidir.")
+            else:
+                st.success("✅ En-boy oranı kullanıcı dostu.")
+
+            # Kenar yoğunluğu
+            if edges < 0.01:
+                st.info("🧩 **Detay az.**\n\nGörsel fazla sade olabilir. Ufak dokular ya da arka plan detayları eklenebilir.")
+            elif edges > 0.10:
+                st.warning("🧩 **Detay fazlalığı.**\n\nGörsel karmaşık görünebilir. Odak noktası belirgin olmalı.")
+            else:
+                st.success("✅ Kenar yoğunluğu ideal.")

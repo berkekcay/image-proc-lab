@@ -17,6 +17,11 @@ def calculate_sharpness(image):
     laplacian = cv2.Laplacian(gray, cv2.CV_64F)
     return laplacian.var()
 
+# Bulanıklık tespiti (düşük Laplacian değeri = bulanık)
+def calculate_blur_score(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    return cv2.Laplacian(gray, cv2.CV_64F).var()
+
 # Kontrast hesaplama
 def calculate_contrast(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -36,10 +41,15 @@ def calculate_colorfulness(image):
     mean_rg, mean_yb = np.mean(rg), np.mean(yb)
     return np.sqrt(std_rg**2 + std_yb**2) + 0.3 * np.sqrt(mean_rg**2 + mean_yb**2)
 
-# MTCNN ile yüz sayısı
-detector = MTCNN()
+# Ortalama renk yoğunluğu
+def calculate_average_color(image):
+    avg_color = image.mean(axis=0).mean(axis=0)
+    return avg_color
+
+# MTCNN ile yüz sayısı (dinamik oluşturma)
 def detect_faces(image):
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    detector = MTCNN()
     results = detector.detect_faces(rgb)
     return len(results)
 
@@ -88,6 +98,7 @@ for idx, image_path in enumerate(image_files):
 
         brightness = calculate_brightness(image)
         sharpness = calculate_sharpness(image)
+        blur_score = calculate_blur_score(image)
         contrast = calculate_contrast(image)
         entropy = calculate_entropy(image)
         colorfulness = calculate_colorfulness(image)
@@ -95,11 +106,13 @@ for idx, image_path in enumerate(image_files):
         aspect_ratio = calculate_aspect_ratio(image)
         edge = edge_density(image)
         dominant = dominant_colors(image)
+        avg_color = calculate_average_color(image)
 
         features_list.append({
             'image_name': os.path.basename(image_path),
             'brightness': brightness,
             'sharpness': sharpness,
+            'blur_score': blur_score,
             'contrast': contrast,
             'entropy': entropy,
             'colorfulness': colorfulness,
@@ -108,7 +121,10 @@ for idx, image_path in enumerate(image_files):
             'edge_density': edge,
             'color_r': dominant[2],
             'color_g': dominant[1],
-            'color_b': dominant[0]
+            'color_b': dominant[0],
+            'avg_r': avg_color[2],
+            'avg_g': avg_color[1],
+            'avg_b': avg_color[0]
         })
 
         print(f"[{idx+1}/{len(image_files)}] İşlendi: {os.path.basename(image_path)}")
