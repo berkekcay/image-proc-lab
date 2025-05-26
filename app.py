@@ -28,6 +28,11 @@ st.set_page_config(page_title="AI Görsel Etkileşim Analizi", layout="wide")
 # ✨ Genel stil
 st.markdown("""
     <style>
+        html, body, [class*="css"], [data-testid="stAppViewContainer"] {
+            background: linear-gradient(135deg, #f0e7ff, #e1f5fe, #fbe9e7) !important;
+            color: #212121 !important;
+        }
+
         .center-wrapper {
             display: flex;
             flex-direction: column;
@@ -38,16 +43,23 @@ st.markdown("""
         }
 
         .custom-box {
-            background-color: #f8f9fa;
+            background: rgba(255, 255, 255, 0.9);
             padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             width: 100%;
             max-width: 700px;
             text-align: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .block-container {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
         }
     </style>
 """, unsafe_allow_html=True)
+
 
 # ✨ Başlık ve yükleme kutuları
 with st.container():

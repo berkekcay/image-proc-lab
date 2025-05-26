@@ -124,7 +124,6 @@ for idx, image_path in enumerate(image_files):
             'avg_g': avg_color[1],
             'avg_b': avg_color[0]
         })
-
         print(f"[{idx+1}/{len(image_files)}] İşlendi: {os.path.basename(image_path)}")
 
     except Exception as e:
