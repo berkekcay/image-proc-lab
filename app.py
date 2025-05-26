@@ -113,12 +113,13 @@ if uploaded_image:
                 x=alt.X('Ozellik', sort=None),
                 y='Deger',
                 color=alt.Color('Ozellik', legend=None),
-                tooltip=['ÖZELLİKLER', 'Değerler']
+                tooltip=[alt.Tooltip('Ozellik', title='Özellik'), alt.Tooltip('Deger', title='Değer')]
             ).properties(
                 width=600,
                 height=300,
                 title='📊 Görsel Özellikler Grafiği'
-            )
+)
+
 
             st.altair_chart(chart, use_container_width=True)
 
@@ -128,7 +129,7 @@ if uploaded_image:
         display: flex;
         justify-content: center;
         margin-top: 4rem;
-    ">
+    "> 
     <div class="custom-box" style="width: 100%; max-width: 700px;">
         <h3 style='color: black; margin-top: 1rem; margin-bottom: 1.5rem;'>📊 Analiz Sonuçları 📊</h3>
 """, unsafe_allow_html=True)
