@@ -78,7 +78,6 @@ image_folder = 'data'
 
 # Veri listesi
 features_list = []
-max_images = 100
 
 # Görsel toplama
 image_files = []
@@ -87,7 +86,6 @@ for root, _, files in os.walk(image_folder):
         if file.lower().endswith(('.png', '.jpg', '.jpeg')):
             image_files.append(os.path.join(root, file))
 
-image_files = image_files[:max_images]
 
 # Görselleri işle
 for idx, image_path in enumerate(image_files):
