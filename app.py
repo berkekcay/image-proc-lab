@@ -19,18 +19,20 @@ from extract_features import (
 )
 import time
 
+
 # 🎯 Model yükleniyor
 model = joblib.load("data/engagement_model.pkl")
 
 # 🌐 Sayfa ayarları
 st.set_page_config(page_title="AI Görsel Etkileşim Analizi", layout="wide")
 
+
 # ✨ Genel stil
 st.markdown("""
     <style>
         html, body, [class*="css"], [data-testid="stAppViewContainer"] {
-            background: linear-gradient(135deg, #f0e7ff, #e1f5fe, #fbe9e7) !important;
-            color: #212121 !important;
+            background-color: #121212 !important;
+            color: #e0e0e0 !important;
         }
 
         .center-wrapper {
@@ -43,19 +45,24 @@ st.markdown("""
         }
 
         .custom-box {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(30, 30, 30, 0.95);
             padding: 2rem;
             border-radius: 16px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             width: 100%;
             max-width: 700px;
             text-align: center;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(6px);
+            color: #ffffff !important;
         }
 
         .block-container {
             padding-top: 2rem;
             padding-bottom: 2rem;
+        }
+
+        div[data-testid="stMarkdownContainer"] {
+            color: #ffffff !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -72,20 +79,21 @@ with st.container():
 
     """, unsafe_allow_html=True)
 
-    st.markdown("""           
-    <div class="custom-box">
-        <h4 style='color: black;'>🔍 Görsel Yükleyin 🔍</h4>
-        <p style='color: gray; font-size: 14px;'>JPG, PNG , JPEG — Max  200MB</p>
-    </div>
+
+st.markdown("""
+<div style='display: flex; justify-content: center;'>
+    <p style='font-size:18px; font-weight:bold;'>📁 Görsel seçin veya sürükleyin (.jpg, .png)</p>
+</div>
 """, unsafe_allow_html=True)
 
-    st.markdown("<p style='font-size:18px; font-weight:bold;'>📁 Görsel seçin veya sürükleyin (.jpg, .png)</p>", unsafe_allow_html=True)
 
 uploaded_image = st.file_uploader(
     label="",
     type=["jpg", "jpeg", "png"],
     label_visibility="collapsed"
 )
+
+
 
 if uploaded_image:
     image = Image.open(uploaded_image).convert("RGB")
