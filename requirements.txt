@@ -7,3 +7,5 @@ joblib
 kagglehub
 opencv-contrib-python
 Pillow
+mtcnn
+tensorflow
