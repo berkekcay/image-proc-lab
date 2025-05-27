@@ -73,6 +73,7 @@ def dominant_colors(image, k=2):
     dominant = palette[np.argmax(np.unique(labels, return_counts=True)[1])]
     return dominant
 
+""""
 # Klasör ayarı
 image_folder = 'data'
 
@@ -137,3 +138,4 @@ if features_list:
     print("✅ Özellik çıkarımı tamamlandı, 'data/features.csv' oluşturuldu.")
 else:
     print("❌ Hiç özellik çıkarılamadı, CSV boş.")
+"""
