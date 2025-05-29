@@ -72,8 +72,7 @@ def dominant_colors(image, k=2):
                                     5, cv2.KMEANS_RANDOM_CENTERS)
     dominant = palette[np.argmax(np.unique(labels, return_counts=True)[1])]
     return dominant
-
-""""
+"""
 # Klasör ayarı
 image_folder = 'data'
 
@@ -91,6 +90,13 @@ for root, _, files in os.walk(image_folder):
 # Görselleri işle
 for idx, image_path in enumerate(image_files):
     try:
+        folder_name = os.path.basename(os.path.dirname(image_path))
+        likes = int(folder_name.split('_')[-2])
+        followers = int(folder_name.split('_')[1])
+        if likes <= 0:
+            continue
+        if followers <= 0:
+            continue
         img = Image.open(image_path).convert("RGB")
         img = img.resize((200, 200))
         image = np.array(img)
@@ -117,15 +123,17 @@ for idx, image_path in enumerate(image_files):
             'colorfulness': colorfulness,
             'faces': faces,
             'aspect_ratio': aspect_ratio,
-            'edge_density': edge,
+            'edge': edge,
             'color_r': dominant[2],
             'color_g': dominant[1],
             'color_b': dominant[0],
             'avg_r': avg_color[2],
             'avg_g': avg_color[1],
-            'avg_b': avg_color[0]
+            'avg_b': avg_color[0],
+            'likes': likes,
+            'followers': followers
         })
-        print(f"[{idx+1}/{len(image_files)}] İşlendi: {os.path.basename(image_path)}")
+        print(f"[{idx+1}/{len(image_files)}] İşlendi: {os.path.basename(image_path)} | Likes: {likes} | Followers: {followers}")
 
     except Exception as e:
         print(f"⚠️ Hata: {image_path} işlenemedi - {e}")

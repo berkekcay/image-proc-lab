@@ -15,7 +15,8 @@ from extract_features import (
     calculate_colorfulness,
     detect_faces,
     calculate_aspect_ratio,
-    edge_density
+    edge_density,
+    calculate_blur_score
 )
 import time
 
@@ -87,6 +88,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+followers = st.number_input("👥 Takipçi Sayınızı Girin:", min_value=1, value=1000, step=100)
+
+
 uploaded_image = st.file_uploader(
     label="",
     type=["jpg", "jpeg", "png"],
@@ -120,7 +124,9 @@ if uploaded_image:
             brightness = calculate_brightness(img)
             sharpness = calculate_sharpness(img)
             dominant = dominant_colors(img)
-            features = np.array([[brightness, sharpness, dominant[2], dominant[1], dominant[0]]])
+            blur_score = calculate_blur_score(img)
+            edge = edge_density(img)
+            features = np.array([[brightness, blur_score, faces, contrast, edge, colorfulness, entropy, sharpness, dominant[2], dominant[1], dominant[0], followers]])
             predicted_likes = model.predict(features)[0]
 
             # Grafik bloğu burada ekleniyor
