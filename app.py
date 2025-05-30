@@ -171,11 +171,35 @@ if uploaded_image:
             st.markdown(f"<div style='font-size:18px; font-weight:600;'>🔀 Entropi: {entropy:.2f}</div>", unsafe_allow_html=True)
             st.markdown(f"<div style='font-size:18px; font-weight:600;'>🌈 Renk Canlılığı: {colorfulness:.2f}</div>", unsafe_allow_html=True)
             st.markdown(f"<div style='font-size:18px; font-weight:600;'>👤 Yüz Sayısı (MTCNN): {faces}</div>", unsafe_allow_html=True)
-            st.markdown(f"<div style='font-size:18px; font-weight:600;'>📀 En-Boy Oranı: {aspect_ratio:.2f}</div>", unsafe_allow_html=True)
+            #st.markdown(f"<div style='font-size:18px; font-weight:600;'>📀 En-Boy Oranı: {aspect_ratio:.2f}</div>", unsafe_allow_html=True)
             st.markdown(f"<div style='font-size:18px; font-weight:600;'>🧩 Kenar Yoğunluğu: {edges:.4f}</div>", unsafe_allow_html=True)
             st.markdown("### 🎨 Dominant Renk", unsafe_allow_html=True)
             st.color_picker("Dominant RGB", value=rgb_hex, label_visibility="collapsed")
             st.markdown(f"<div style='font-size:18px; font-weight:600;'>RGB: ({int(dominant[2])}, {int(dominant[1])}, {int(dominant[0])})</div>", unsafe_allow_html=True)
+
+
+            with st.expander("📊 Özellik Skalaları | Değerlerin Anlamı"):
+                st.markdown("#### 🔆 Parlaklık (brightness)")
+                st.markdown("- 🔴 0–80: Karanlık\n- 🟡 80–220: **İdeal**\n- 🔴 220+: Aşırı parlak")
+
+                st.markdown("#### 🔍 Netlik (sharpness)")
+                st.markdown("- 🔴 <150: Bulanık\n- 🟡 150–1200: **İdeal**\n- 🔵 >1200: Aşırı net / yapay görünüm")
+
+                st.markdown("#### 🧪 Bulanıklık (blur_score)")
+                st.markdown("- 🔴 <50: Yüksek bulanıklık (net değil)\n- 🟡 50–300: Orta düzey\n- 🔵 >300: Net görüntü")
+
+                st.markdown("#### 🔷 Kontrast (contrast)")
+                st.markdown("- 🔴 <30: Zayıf kontrast\n- 🟡 30–100: **İdeal**\n- 🔴 >100: Aşırı kontrast")
+
+                st.markdown("#### 🧩 Kenar Yoğunluğu (edge_density)")
+                st.markdown("- 🔵 <0.01: Çok sade\n- 🟡 0.01–0.10: **Dengeli**\n- 🔴 >0.10: Fazla detay / karışık")
+
+                st.markdown("#### 🌈 Renk Canlılığı (colorfulness)")
+                st.markdown("- 🔴 <20: Soluk renkler\n- 🟡 20–60: **Doğal canlılık**\n- 🔴 >60: Aşırı canlı / yapay görünüm")
+
+                st.markdown("#### 🔀 Entropi (entropy)")
+                st.markdown("- 🔵 <4: Sade\n- 🟡 4–7: **Dengeli bilgi yoğunluğu**\n- 🔴 >7: Aşırı karmaşık / dikkat dağıtıcı")
+
 
             st.markdown("## 💡 Detaylı Optimizasyon Önerileri")
 
@@ -219,6 +243,7 @@ if uploaded_image:
             else:
                 st.success("✅ Görsel dengeli bilgi yoğunluğuna sahip.")
 
+            """
             # En-boy oranı
             if aspect_ratio > 2:
                 st.warning("📐 **Görsel çok yatay.**\n\nMobilde görüntüleme sorunları yaşanabilir. Daha dengeli bir oran tercih edilebilir.")
@@ -226,7 +251,7 @@ if uploaded_image:
                 st.warning("📐 **Görsel çok dikey.**\n\nKullanıcı deneyimi açısından yatay oranlar daha etkilidir.")
             else:
                 st.success("✅ En-boy oranı kullanıcı dostu.")
-
+            """
             # Kenar yoğunluğu
             if edges < 0.01:
                 st.info("🧩 **Detay az.**\n\nGörsel fazla sade olabilir. Ufak dokular ya da arka plan detayları eklenebilir.")
