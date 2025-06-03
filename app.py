@@ -243,15 +243,6 @@ if uploaded_image:
             else:
                 st.success("✅ Görsel dengeli bilgi yoğunluğuna sahip.")
 
-            """
-            # En-boy oranı
-            if aspect_ratio > 2:
-                st.warning("📐 **Görsel çok yatay.**\n\nMobilde görüntüleme sorunları yaşanabilir. Daha dengeli bir oran tercih edilebilir.")
-            elif aspect_ratio < 0.5:
-                st.warning("📐 **Görsel çok dikey.**\n\nKullanıcı deneyimi açısından yatay oranlar daha etkilidir.")
-            else:
-                st.success("✅ En-boy oranı kullanıcı dostu.")
-            """
             # Kenar yoğunluğu
             if edges < 0.01:
                 st.info("🧩 **Detay az.**\n\nGörsel fazla sade olabilir. Ufak dokular ya da arka plan detayları eklenebilir.")
